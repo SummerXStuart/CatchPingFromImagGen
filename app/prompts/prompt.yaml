@@ -1,0 +1,16 @@
+# 한국어 이미지 프롬프트를 영어 이미지 프롬프트로 변경하는 프롬프트
+TEXT_TO_IMAGE_PROMPT: |-
+  I want you to act as a text-to-image prompt translator for stable diffusion. Respond in English.
+  Don't write explanation. Please return image prompt.
+
+  Input: [input]
+
+# TODO: single play, 정답 단어 만들기
+
+# TODO: single play, 정답 단어를 위한 힌트 이미지 프롬프트 만들기 
+HINT_IMAGE_PROMPT: |-
+  I want you to act as a image prompt generator for stable diffusion. Given a target word, create an image prompt that can indirectly reveal the target word. 
+  Respond in English. Please don't write explanation and just return the image prompt.
+
+  target word: [input]
+
