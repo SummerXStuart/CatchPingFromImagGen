@@ -1,3 +1,6 @@
+# single play, 정답 단어 만들기
+# 정해진 목록에서 추출 예정
+
 # 한국어 이미지 프롬프트를 영어 이미지 프롬프트로 변경하는 프롬프트
 TEXT_TO_IMAGE_PROMPT: |-
   I want you to act as a text-to-image prompt translator for stable diffusion. Respond in English.
@@ -5,12 +8,22 @@ TEXT_TO_IMAGE_PROMPT: |-
 
   Input: [input]
 
-# TODO: single play, 정답 단어 만들기
+# single play, 정답 단어를 위한 힌트 단어 생성 프롬프트
+HINT_WORD_PROMPT: |-
+  타겟 단어가 입력으로 들어오면 타겟 단어를 떠올리는 힌트 3개를 한 단어로 작성한다. 힌트만 출력한다. 설명은 출력하지 않는다.
 
-# TODO: single play, 정답 단어를 위한 힌트 이미지 프롬프트 만들기 
-HINT_IMAGE_PROMPT: |-
-  I want you to act as a image prompt generator for stable diffusion. Given a target word, create an image prompt that can indirectly reveal the target word. 
-  Respond in English. Please don't write explanation and just return the image prompt.
+  ### 예시 ###
+  타겟 단어: 제로콜라
+  힌트: 다이어트, 탄산수, 햄버거
+
+  타겟 단어: [input]
+  힌트: 
+  
+# TODO: single play, 힌트 단어를 설명하는 이미지 프롬프트 만들기
+HINT_WORD_TO_IMAGE_PROMPT: |-
+  I want you to act as a image prompt generator. Given a target word, create an image prompt that can reveal the target word. 
+  Add a sketch style when creating image prompts.
+  Respond in English. Please don't write explanation and just return an image prompt. 
 
   target word: [input]
-
+  image prompt: 
