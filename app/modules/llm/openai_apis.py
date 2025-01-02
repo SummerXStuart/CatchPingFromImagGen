@@ -1,6 +1,6 @@
 from openai import OpenAI
 import os
-
+import  traceback
 # TODO key추가해서 관리하기
 os.environ["OPENAI_API_KEY"] = ""
 
@@ -8,7 +8,7 @@ os.environ["OPENAI_API_KEY"] = ""
 client = OpenAI()
 
 
-def generate_text(model, system_prompt, user_prompt, params, response_format):
+def generate_text(model, user_prompt, params, response_format, system_prompt=None):
     """Generate text using open ai API
 
     Args:
@@ -18,22 +18,35 @@ def generate_text(model, system_prompt, user_prompt, params, response_format):
         params (_type_): _description_
         response_format (_type_): _description_
     """
-    response = client.chat.completions.create(
-        model=model,
-        messages=[
+
+    messages = []
+
+    if system_prompt:
+        messages.append(
             {
                 "role": "system", 
                 "content": system_prompt
-            },
-            {
-                "role": "user", 
-                "content": user_prompt
             }
-        ],
-        response_format=response_format,
-        **params
+        )
+
+    messages.append(
+        {
+            "role": "user", 
+            "content": user_prompt
+        }
     )
 
-    print(response)
-    print(response.choices[0].message.content)
-    return response
+    try:
+        response = client.chat.completions.create(
+            model=model,
+            messages=messages,
+            response_format=response_format,
+            **params
+        )
+
+        # print(response)
+        # print(response.choices[0].message.content)
+        return response
+    except:
+        print(traceback.format_exc())
+        return None
