@@ -1,9 +1,10 @@
 import openai 
-import webbrowser
 import os
 from time import time
-# Replace YOUR_API_KEY with your OpenAI API key
-openai_api_key = None
+from app.modules.utils.link_shortener import shorten
+import traceback
+
+openai_api_key = os.getenv("OPENAI_API_KEY")
 
 client = openai.OpenAI(api_key = openai_api_key)
 
@@ -11,18 +12,25 @@ client = openai.OpenAI(api_key = openai_api_key)
 def call_dalle_api(model, prompt, size:str="1024x1024", quality:str="standard", n:int=1):
     # 1장 생성 시 0.03$ 
     start = time()
-    response = client.images.generate(
-        model=model,
-        prompt=prompt,
-        size=size,
-        quality=quality,
-        n=n,
-    )
+    try:
+        response = client.images.generate(
+            model=model,
+            prompt=prompt,
+            size=size,
+            quality=quality,
+            n=n,
+        )
+    except:
+        print(traceback.format_exc())
+        return None
+        
     elapsed_time = time() - start
 
     url = response.data[0].url
-    print(f"url: {url}")
+    short_url = shorten(url)
     print(f"elapsed_time: {elapsed_time}")
+    
+    return short_url
 
 if __name__ == "__main__":
     model_name = "dall-e-3"

@@ -2,7 +2,7 @@ from openai import OpenAI
 import os
 import  traceback
 # TODO key추가해서 관리하기
-os.environ["OPENAI_API_KEY"] = ""
+os.environ["OPENAI_API_KEY"] = os.getenv("OPENAI_API_KEY")
 
 # 아래는 예제
 client = OpenAI()
