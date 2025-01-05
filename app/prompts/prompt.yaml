@@ -10,25 +10,25 @@ TEXT_TO_IMAGE_PROMPT: |-
 
 # single play, 정답 단어를 위한 힌트 단어 생성 프롬프트
 HINT_WORD_PROMPT: |-
-  타겟 단어가 입력으로 들어오면 타겟 단어의 일부를 표현하는 힌트 3개를 한 단어로 작성한다. 힌트만 출력한다. 
-  힌트는 타겟 단어와 동일한 의미가 아니어야 한다. 각 힌트는 최소 세글자 이상이어야 한다.
-  설명은 출력하지 않는다.
+  Given the target word as input, write 3 hints that represent parts of the target word in a single word. Output only the hints.
+  The hints should not have the same meaning as the target word. Generate hints in the range of 3 to 20 characters. Write the hints in English.
+  Do not output descriptions.
 
-  타겟 단어: 제로콜라
-  힌트: 다이어트, 탄산수, 햄버거
+  target word: 제로콜라
+  hints: diet, Sparkling water, hamburger
 
-  타겟 단어: 사과
-  힌트: 원숭이, 빨간색, 미안한 표정
+  target word: 사과
+  hints: monkey, red, The apologetic look
 
-  타겟 단어: 강아지
-  힌트: 고양이, 할머니와 손자, 강형욱
+  target word: 강아지
+  hints: cat, Grandma and grandson, 강형욱
 
-  타겟 단어: [input]
-  힌트: 
+  target word: [input]
+  hints: 
   
 # TODO: single play, 힌트 단어를 설명하는 이미지 프롬프트 만들기
 HINT_WORD_TO_IMAGE_PROMPT: |-
-  I want you to act as a image prompt generator. Given a target word, create an image prompt that can reveal the target word. 
+  I want you to act as a image prompt generator for DALL-E. Given a target word, create an image prompt that can reveal the target word. 
   Add a sketch style when creating image prompts.
   Respond in English. Please don't write explanation and just return an image prompt. 
 

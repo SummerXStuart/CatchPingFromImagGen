@@ -6,6 +6,7 @@ from app.modules.search.words import (
     get_single_play_set
 )
 import yaml
+import pandas as pd
 
 with open("app/prompts/prompt.yaml") as _f:
     prompts = yaml.safe_load(_f)
@@ -22,13 +23,15 @@ def make_single_play_set():
     target_words = get_full_target_words()
     df = get_single_play_set()
 
+    HINT_WORD_PROMPT = prompts["HINT_WORD_PROMPT"]
+    HINT_WORD_TO_IMAGE_PROMPT = prompts["HINT_WORD_TO_IMAGE_PROMPT"]
 
     # 타겟 단어 가져와서 순서대로
     for i, _target in enumerate(target_words):
-        print(f"### target : {_target}")
-        if _target not in df["target"]:
+        if _target not in df["target"].unique():
+            print(f"### target : {_target}")
             # 만들기
-            hint_word_prompt = prompts["HINT_WORD_PROMPT"]
+            hint_word_prompt = HINT_WORD_PROMPT[:]
             hint_word_prompt = hint_word_prompt.replace("[input]", _target)
             print(f"- hint_word_prompt: {hint_word_prompt}")
 
@@ -37,13 +40,16 @@ def make_single_play_set():
                                         user_prompt=hint_word_prompt,
                                         params={
                                             "temperature": 1.5,
+                                            "max_tokens": 34
                                             },
                                         response_format=None
                                         )
             if gen_results:
                 gen_results = gen_results.choices[0].message.content
             else:
-                # TODO 여기까지라도 저장하기
+                print("df 저장")
+                df.to_csv("app/resources/single_mode_set.csv", index=False)
+
                 break
 
             hint_words = gen_results.split(",")
@@ -52,26 +58,45 @@ def make_single_play_set():
             print(f"\n- hint단어 생성!: {hint_words}\n")
             
             # 각 힌트 단어별 이미지 생성
-            # print("힌트별 이미지 프롬프트 생성")
-            # for hint_word in hint_words:
-            #     print(f"  - hint: {hint_word}")
-            #     HINT_WORD_TO_IMAGE_PROMPT = prompts["HINT_WORD_TO_IMAGE_PROMPT"]
-            #     HINT_WORD_TO_IMAGE_PROMPT = HINT_WORD_TO_IMAGE_PROMPT.replace("[input]", hint_word)
-            #     print(f"  - hint image prompt: {HINT_WORD_TO_IMAGE_PROMPT}\n\n")
+            print("힌트별 이미지 프롬프트 생성")
+            hint_img_prompts, hint_img_urls = [], []
+            for hint_word in hint_words:
+                print(f"  - hint: {hint_word}")
+                hint_word_to_img_prompt = HINT_WORD_TO_IMAGE_PROMPT[:]
+                hint_word_to_img_prompt = hint_word_to_img_prompt.replace("[input]", hint_word)
+                print(f"  - hint image prompt for gen image: {hint_word_to_img_prompt}\n\n")
+                
+                hint_image_prompt = generate_text(model="gpt-4o",
+                                            user_prompt=hint_word_to_img_prompt,
+                                            params={
+                                                "temperature": 1.5,
+                                                "max_tokens": 128
+                                                },
+                                            response_format=None
+                                            )
+                if hint_image_prompt:
+                    hint_image_prompt = hint_image_prompt.choices[0].message.content
+                else:
+                    print("df 저장")
+                    df.to_csv("app/resources/single_mode_set.csv", index=False)
 
-            # # 이미지 생성
-            # print("이미지 생성")
+                    break
+                print(f"    - hint_image_prompt: {hint_image_prompt}")
+                hint_img_prompts.append(hint_image_prompt)
 
-            # # 생성된 이미지 링크를 shorten
-            # print("shorten url")
-            if i > 0:
+                hint_image_url = call_dalle_api(model="dall-e-3", prompt=hint_image_prompt)
+                hint_img_urls.append(hint_image_url)
+            df_tmp = pd.DataFrame({"target": [_target]*len(hint_img_urls),
+                                   "hint": hint_words,
+                                   "hint_image_prompt": hint_img_prompts,
+                                   "hint_url": hint_img_urls
+                                   })
+            df = pd.concat([df, df_tmp], ignore_index=True)
+
+            if i > 10:
                 break
-
-            
 
     # df로 저장??
     print("df 저장")
-    # target word, hint word, hint image shorten url
-
-    # 저장
-
+    df.to_csv("app/resources/single_mode_set.csv", index=False)
+    

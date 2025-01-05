@@ -8,7 +8,7 @@ with open("app/resources/single_mode_target_words.txt", "r") as _f:
 try:
     df_single_play = pd.read_csv("app/resources/single_mode_set.csv", encoding="utf-8")
 except:
-    df_single_play = pd.DataFrame({"target": [], "hint": [], "hint_url": []})
+    df_single_play = pd.DataFrame({"target": [], "hint": [], "hint_image_prompt": [], "hint_url": []})
 
 def get_random_word():
     return random.choice(data)
