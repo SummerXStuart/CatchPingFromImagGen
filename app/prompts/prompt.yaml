@@ -28,9 +28,9 @@ HINT_WORD_PROMPT: |-
   
 # TODO: single play, 힌트 단어를 설명하는 이미지 프롬프트 만들기
 HINT_WORD_TO_IMAGE_PROMPT: |-
-  I want you to act as a image prompt generator for DALL-E. Given a target word, create an image prompt that can reveal the target word. 
+  I want you to act as a image prompt generator for DALL-E. Given a target text, create an image prompt that can reveal the target text. 
   Add a sketch style when creating image prompts.
-  Respond in English. Please don't write explanation and just return an image prompt. 
+  Write the image prompt in English. Please don't write explanation and just return an image prompt. 
 
-  target word: [input]
+  target text: [input]
   image prompt: 

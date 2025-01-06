@@ -32,7 +32,8 @@ def make_single_play_set():
     # 타겟 단어 가져와서 순서대로
     for i, _target in enumerate(target_words):
         if _target not in df["target"].unique():
-            print(f"### target : {_target}")
+            # print(f"### target : {_target}")
+            continue
             # 만들기
             hint_word_prompt = HINT_WORD_PROMPT[:]
             hint_word_prompt = hint_word_prompt.replace("[input]", _target)
@@ -100,6 +101,59 @@ def make_single_play_set():
                                    "hint_b64_img": hint_b64_imgs
                                    })
             df = pd.concat([df, df_tmp], ignore_index=True)
+
+            if i > 10:
+                break
+        else:
+            print(f"\ntarget: {_target}")
+            # target 있는 행의 정보 알아내기
+            df_cur_target = df[df["target"]==_target]
+            
+            
+            # target만 있을 때, 힌트 생성 -> 이미지 프롬프트 생성 -> 이미지 생성
+            # print(f"hint 유무: {df_cur_target['hint'].isna().sum()}")
+
+            # 힌트만 있을 때 -> 이미지 프롬프트 생성 -> 이미지 생성
+            print(f"hint_b64_img: {df_cur_target['hint_b64_img'].isna().sum()}")
+
+            if df_cur_target['hint_b64_img'].isna().sum() > 0:
+                for idx, img_absence in zip(df_cur_target['hint_b64_img'].isna().index, df_cur_target['hint_b64_img'].isna()):
+                    if img_absence:
+                        hint_word = df.iloc[idx, 1]
+                        print(f"  - hint: {hint_word}")
+                        hint_word_to_img_prompt = HINT_WORD_TO_IMAGE_PROMPT[:]
+                        hint_word_to_img_prompt = hint_word_to_img_prompt.replace("[input]", hint_word)
+                        print(f"  - hint image prompt for gen image: {hint_word_to_img_prompt}\n\n")
+                        
+                        hint_image_prompt = generate_text(model="gpt-4o",
+                                                    user_prompt=hint_word_to_img_prompt,
+                                                    params={
+                                                        "temperature": 1.5,
+                                                        "max_tokens": 128
+                                                        },
+                                                    response_format=None
+                                                    )
+                        if hint_image_prompt:
+                            hint_image_prompt = hint_image_prompt.choices[0].message.content
+                        else:
+                            
+                            print("df 저장")
+                            df.to_csv("app/resources/single_mode_set.csv", index=False)
+
+                            break
+                        print(f"    - hint_image_prompt: {hint_image_prompt}")
+                        
+
+                        # hint_image_url = call_dalle_api(model="dall-e-3", prompt=hint_image_prompt)
+                        # hint_img_urls.append(hint_image_url)
+                        hint_b64_img = call_dalle_api(model="dall-e-3", prompt=hint_image_prompt, response_format="b64_json")
+                        resized_hint_b64_img = resize_base64_image(hint_b64_img, 300, 300)
+                        
+                        df.loc[idx, "hint_image_prompt"] = hint_image_prompt
+                        df.loc[idx, "hint_b64_img"] = resized_hint_b64_img
+
+
+            print("============")
 
             if i > 10:
                 break
