@@ -5,6 +5,9 @@ from app.modules.search.words import (
     get_full_target_words,
     get_single_play_set
 )
+from app.modules.utils.img_mgmt import (
+    resize_base64_image
+)
 import yaml
 import pandas as pd
 
@@ -59,7 +62,8 @@ def make_single_play_set():
             
             # 각 힌트 단어별 이미지 생성
             print("힌트별 이미지 프롬프트 생성")
-            hint_img_prompts, hint_img_urls = [], []
+            hint_img_prompts, hint_b64_imgs = [], []
+            # hint_img_prompts, hint_img_urls = [], []
             for hint_word in hint_words:
                 print(f"  - hint: {hint_word}")
                 hint_word_to_img_prompt = HINT_WORD_TO_IMAGE_PROMPT[:]
@@ -84,12 +88,16 @@ def make_single_play_set():
                 print(f"    - hint_image_prompt: {hint_image_prompt}")
                 hint_img_prompts.append(hint_image_prompt)
 
-                hint_image_url = call_dalle_api(model="dall-e-3", prompt=hint_image_prompt)
-                hint_img_urls.append(hint_image_url)
-            df_tmp = pd.DataFrame({"target": [_target]*len(hint_img_urls),
+                # hint_image_url = call_dalle_api(model="dall-e-3", prompt=hint_image_prompt)
+                # hint_img_urls.append(hint_image_url)
+                hint_b64_img = call_dalle_api(model="dall-e-3", prompt=hint_image_prompt, response_format="b64_json")
+                resized_hint_b64_img = resize_base64_image(hint_b64_img, 300, 300)
+                hint_b64_imgs.append(resized_hint_b64_img)
+                
+            df_tmp = pd.DataFrame({"target": [_target]*len(hint_b64_imgs),
                                    "hint": hint_words,
                                    "hint_image_prompt": hint_img_prompts,
-                                   "hint_url": hint_img_urls
+                                   "hint_b64_img": hint_b64_imgs
                                    })
             df = pd.concat([df, df_tmp], ignore_index=True)
 
