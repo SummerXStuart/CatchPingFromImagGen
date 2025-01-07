@@ -10,7 +10,8 @@ TEXT_TO_IMAGE_PROMPT: |-
 
 # single play, 정답 단어를 위한 힌트 단어 생성 프롬프트
 HINT_WORD_PROMPT: |-
-  Given the target word as input, write 3 hints that represent parts of the target word in a single word. Output only the hints.
+  Given the target word as input, write 3 hints. Output only the hints.
+  The hints should represent parts of the target word or describe characteristics of the target word.
   The hints should not have the same meaning as the target word. Generate hints in the range of 3 to 20 characters. Write the hints in English.
   Do not output descriptions.
 
@@ -18,10 +19,10 @@ HINT_WORD_PROMPT: |-
   hints: diet, Sparkling water, hamburger
 
   target word: 사과
-  hints: monkey, red, The apologetic look
+  hints: A man apologizing to a woman, red color, A woman listening to a song on her smartphone
 
   target word: 강아지
-  hints: cat, Grandma and grandson, 강형욱
+  hints: cat, Grandma and grandson, Wolf friendly with caveman
 
   target word: [input]
   hints: 

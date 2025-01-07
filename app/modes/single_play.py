@@ -21,6 +21,8 @@ def generate_hint_image(hint_word):
         hint_word (_type_): _description_
     """
 
+constraint_number= 15
+
 # 미리 싱글 플레이를 위한 힌트 단어 및 이미지 만들어 놓기
 def make_single_play_set():
     target_words = get_full_target_words()
@@ -32,8 +34,7 @@ def make_single_play_set():
     # 타겟 단어 가져와서 순서대로
     for i, _target in enumerate(target_words):
         if _target not in df["target"].unique():
-            # print(f"### target : {_target}")
-            continue
+            print(f"### target : {_target}")
             # 만들기
             hint_word_prompt = HINT_WORD_PROMPT[:]
             hint_word_prompt = hint_word_prompt.replace("[input]", _target)
@@ -102,7 +103,7 @@ def make_single_play_set():
                                    })
             df = pd.concat([df, df_tmp], ignore_index=True)
 
-            if i > 10:
+            if i > constraint_number:
                 break
         else:
             print(f"\ntarget: {_target}")
@@ -155,7 +156,7 @@ def make_single_play_set():
 
             print("============")
 
-            if i > 10:
+            if i > constraint_number:
                 break
 
     # df로 저장??
