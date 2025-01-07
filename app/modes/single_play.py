@@ -21,7 +21,7 @@ def generate_hint_image(hint_word):
         hint_word (_type_): _description_
     """
 
-constraint_number= 15
+constraint_number = 50
 
 # 미리 싱글 플레이를 위한 힌트 단어 및 이미지 만들어 놓기
 def make_single_play_set():
@@ -76,7 +76,7 @@ def make_single_play_set():
                                             user_prompt=hint_word_to_img_prompt,
                                             params={
                                                 "temperature": 1.5,
-                                                "max_tokens": 128
+                                                "max_tokens": 64
                                                 },
                                             response_format=None
                                             )
