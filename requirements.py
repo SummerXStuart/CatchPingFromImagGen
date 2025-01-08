@@ -5,3 +5,4 @@ pyshorteners
 python-dotenv==1.0.1
 pillow
 pandas
+filelock
