@@ -10,6 +10,7 @@ TEXT_TO_IMAGE_PROMPT: |-
 
 # single play, 정답 단어를 위한 힌트 단어 생성 프롬프트
 HINT_WORD_PROMPT: |-
+  I want you to act as a hints generator. 
   Given the target word as input, write 3 hints. Output only the hints.
   The hints should represent parts of the target word or describe characteristics of the target word.
   The hints should not have the same meaning as the target word. Generate hints in the range of 3 to 20 characters. Write the hints in English.

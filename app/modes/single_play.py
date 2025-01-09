@@ -44,7 +44,7 @@ def make_single_play_set():
             gen_results = generate_text(model="gpt-4o",
                                         user_prompt=hint_word_prompt,
                                         params={
-                                            "temperature": 1.5,
+                                            "temperature": 1.1,
                                             "max_tokens": 34
                                             },
                                         response_format=None
@@ -75,7 +75,7 @@ def make_single_play_set():
                 hint_image_prompt = generate_text(model="gpt-4o",
                                             user_prompt=hint_word_to_img_prompt,
                                             params={
-                                                "temperature": 1.5,
+                                                "temperature": 1.1,
                                                 "max_tokens": 64
                                                 },
                                             response_format=None
@@ -93,6 +93,12 @@ def make_single_play_set():
                 # hint_image_url = call_dalle_api(model="dall-e-3", prompt=hint_image_prompt)
                 # hint_img_urls.append(hint_image_url)
                 hint_b64_img = call_dalle_api(model="dall-e-3", prompt=hint_image_prompt, response_format="b64_json")
+                if hint_b64_img is None:
+                    print("df 저장")
+                    df.to_csv("app/resources/single_mode_set.csv", index=False)
+
+                    break
+                    
                 resized_hint_b64_img = resize_base64_image(hint_b64_img, 300, 300)
                 hint_b64_imgs.append(resized_hint_b64_img)
                 
