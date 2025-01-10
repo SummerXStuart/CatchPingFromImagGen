@@ -1,0 +1,62 @@
+{
+    "stuart2501101057": {
+        "uid": "stuart2501101057",
+        "targets": [
+            "스타벅스",
+            "강아지",
+            "학교"
+        ],
+        "current_target_index": 0,
+        "current_hint_img_index": 0,
+        "trial": 0,
+        "score": 0
+    },
+    "stuart2501101125": {
+        "uid": "stuart2501101125",
+        "targets": [
+            "하늘",
+            "치과의사",
+            "고양이"
+        ],
+        "current_target_index": 2,
+        "current_hint_img_index": 2,
+        "trial": 3,
+        "score": 4
+    },
+    "stuart2501101652": {
+        "uid": "stuart2501101652",
+        "targets": [
+            "이순신",
+            "포켓몬",
+            "이순신"
+        ],
+        "current_target_index": 0,
+        "current_hint_img_index": 0,
+        "trial": 1,
+        "score": 0
+    },
+    "stuart2501101656": {
+        "uid": "stuart2501101656",
+        "targets": [
+            "스타벅스",
+            "치과의사",
+            "박지성"
+        ],
+        "current_target_index": 2,
+        "current_hint_img_index": 2,
+        "trial": 3,
+        "score": 4
+    },
+    "test1234": {
+        "uid": "test1234",
+        "targets": [
+            "이순신",
+            "스타벅스",
+            "고양이"
+        ],
+        "current_target_index": 2,
+        "current_hint_img_index": 2,
+        "trial": 1,
+        "score": 5
+    }
+}

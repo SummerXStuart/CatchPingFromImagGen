@@ -60,6 +60,7 @@ async def single_mode(msg: Input):
     
     score = _status["score"]
     
+    #TODO 정답일 때와 end=True일 때, 한 문제에 대해 모든 힌트와 기회를 소진했을 때는 target을 알려주기 
     if result:
         # 맞으면 trial 에 따른 score 추가
         score += score_criteria[trial]
@@ -85,6 +86,7 @@ async def single_mode(msg: Input):
                 "score": score,
                 "result": result, # 문제를 맞혔는지
                 "trial": trial, 
+                "target": target_word,
                 "end": True
             }
         else:
@@ -117,15 +119,16 @@ async def single_mode(msg: Input):
                 "score": score,
                 "result": result, # 문제를 맞혔는지
                 "trial": trial, 
+                "target": target_word,
                 "end": False
             }
         
     else:
+        current_hint_img_index = _status["current_hint_img_index"]
         # 틀리면 
         if trial < 3:
             # trial < 3 이면 기존 힌트 인덱스 찾아서 힌트 이미지 출력
             # 다음 힌트 달라고 하는건 별개 엔드포인트 부여
-            current_hint_img_index = _status["current_hint_img_index"]
             _data = {
                 "uid": msg.uid,
                 "targets": _status["targets"],
@@ -148,6 +151,7 @@ async def single_mode(msg: Input):
                 "score": score,
                 "result": result, # 문제를 맞혔는지
                 "trial": trial, 
+                "target": None,
                 "end": False
             }
         
@@ -189,6 +193,7 @@ async def single_mode(msg: Input):
                     "score": score,
                     "result": result, 
                     "trial": trial, 
+                    "target": None,
                     "end": False
                 }
             elif current_hint_img_index == 2:
@@ -213,6 +218,7 @@ async def single_mode(msg: Input):
                         "score": score,
                         "result": result, # 문제를 맞혔는지
                         "trial": trial, 
+                        "target": target_word,
                         "end": True
                     }
                 elif current_target_index < 2:
@@ -242,21 +248,11 @@ async def single_mode(msg: Input):
                         "score": score,
                         "result": result, # 문제를 맞혔는지
                         "trial": trial, 
+                        "target": target_word,
                         "end": False
                     }
 
-    # output = {
-    #     "target_word": df.iloc[0,0],
-    #     "hints_b64_imgs": [
-    #         df.iloc[0,3],
-    #         df.iloc[1,3],
-    #         df.iloc[2,3]
-    #     ]
-    # }
-     
     
-    # for p in output:
-    #     print(p["target_word"])
     return output
 
 @app.post("/catchping_backend/next_hint")
@@ -304,6 +300,66 @@ async def single_mode_next_hint(msg: InitInfo):
 
     return output
 
+
+@app.post("/catchping_backend/giveup")
+async def giveup(msg: InitInfo):
+    # uid 기준 status 가져오기
+    _status = read_user_data(msg.uid)
+    
+    # 현재 문제가 뭔지 확인
+    current_target_index = _status["current_target_index"]
+    target_word = _status["targets"][current_target_index]
+    score = _status["score"]
+
+    # 현재 문제를 모르겠다고 포기한다는 의미
+    # 정답 알려주고
+    
+    # 다음 문제 있으면 진행
+    if current_target_index < 2:
+        # TODO target_word 제대로 나오는지 확인, 이전 정답이 나와야 함.
+        current_target_index += 1
+        current_hint_img_index = 0
+        trial = 0
+        
+        _data = {
+            "uid": msg.uid,
+            "targets": _status["targets"],
+            "current_target_index": current_target_index,
+            "current_hint_img_index": current_hint_img_index,
+            "trial": trial,
+            "score": score
+        }
+        write_user_data(msg.uid, _data)
+        
+        b64_img = df[df["target"]==_status["targets"][current_target_index]].iloc[current_hint_img_index, 3]
+        
+        output = {
+            "hint_b64_imgs": [b64_img],
+            "current_target_index": current_target_index,
+            "current_hint_img_index": current_hint_img_index,
+            "score": score,
+            "result": False, 
+            "trial": trial, 
+            "target": target_word,
+            "end": False
+        }
+    
+    else:
+        # 마지막 문제면 스코어 보여주고 마무리
+        
+        output = {
+            "hint_b64_imgs": [],
+            "current_target_index": current_target_index,
+            "current_hint_img_index": _status["current_hint_img_index"],
+            "score": score,
+            "result": False, 
+            "trial": trial, 
+            "target": target_word,
+            "end": True
+        }
+
+    return output
+
 @app.post("/catchping_backend/init_single_mode")
 async def init_single_mode(msg: InitInfo):
     """처음 요청"""
@@ -340,7 +396,7 @@ async def init_single_mode(msg: InitInfo):
 if __name__=="__main__":
 	
     uvicorn.run(
-        app="dummy:app",
+        app="game_server:app",
         host="0.0.0.0",
         port=5001,
         reload=False,
