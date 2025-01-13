@@ -9,24 +9,57 @@ TEXT_TO_IMAGE_PROMPT: |-
   Input: [input]
 
 # single play, 정답 단어를 위한 힌트 단어 생성 프롬프트
-HINT_WORD_PROMPT: |-
-  I want you to act as a hints generator. 
-  Given the target word as input, write 3 hints. Output only the hints.
-  The hints should represent parts of the target word or describe characteristics of the target word.
-  The hints should not have the same meaning as the target word. Generate hints in the range of 3 to 20 characters. Write the hints in English.
-  Do not output descriptions.
+# HINT_WORD_PROMPT: |-
+#   I want you to act as a hints generator. 
+#   Given the target word as input, write 3 hints. Output only the hints.
+#   The hints should represent parts of the target word or describe characteristics of the target word.
+#   The hints should not have the same meaning as the target word. Generate hints in the range of 3 to 20 characters. Write the hints in English.
+#   Do not output descriptions.
 
-  target word: 제로콜라
-  hints: diet, Sparkling water, hamburger
+# HINT_WORD_PROMPT: |-
+#   I want you to act as a hints generator. 
+#   Create a quiz game where users guess the target word based on given hints. Write hint texts that reveal clues about the target word. Provide exactly three hints for each target word. Refer to the examples for guidance, and ensure the hints are written in English.
+#   Generate each hint in the range of 3 to 20 characters. Do not output descriptions.
+
+  # target word: 제로콜라
+  # hints: diet, Sparkling water, hamburger
+
+
+
+HINT_WORD_PROMPT2: |-
+  Describe the hints as vivid, image-evoking scenarios that help users visualize and connect to the target word. 
+  Ensure the descriptions are detailed and engaging, painting a clear mental picture. 
+  Provide three hints for each target word, all written in English. Do not ouput descriptions.
 
   target word: 사과
   hints: A man apologizing to a woman, red color, A woman listening to a song on her smartphone
 
-  target word: 강아지
-  hints: cat, Grandma and grandson, Wolf friendly with caveman
+  target word: 짜장면
+  hints: Asian people sitting around a round table eating noodles, A man riding a scooter wearing a helmet and holding a silver metal bag in one hand., Brown noodles
 
   target word: [input]
   hints: 
+
+
+HINT_WORD_PROMPT: |-
+  Create a quiz game where users guess the target word based on vivid, image-evoking hints. For each target word, write three detailed hints that help users visualize and connect to the word. Each hint should describe a scenario or imagery that brings the target word to mind. Use the following structure as a guideline:
+
+  1. The hint should evoke a clear mental picture related to the target word.
+  2. The hint must be concise yet descriptive, focusing on scenarios or objects associated with the target word.
+  3. Write all hints in English.
+  4. Do not output description and just write the hints. Separate the three hints with commas.
+
+  Refer to the examples for inspiration:
+
+  Target word: 제로콜라
+  Hints: A glass of sparkling drink with bubbles rising, a fitness enthusiast choosing a drink, a meal with a hamburger and fries.
+  
+  Target word: 사과
+  Hints: A man handing a red fruit to a woman as an apology, a shiny red object on a table, a smartphone with a logo of a bitten fruit.
+
+  #####
+  Target word: [input]
+  Hints: 
   
 # TODO: single play, 힌트 단어를 설명하는 이미지 프롬프트 만들기
 HINT_WORD_TO_IMAGE_PROMPT: |-

@@ -21,7 +21,8 @@ def generate_hint_image(hint_word):
         hint_word (_type_): _description_
     """
 
-constraint_number = 50
+start_num = 0
+last_num = 60
 
 # 미리 싱글 플레이를 위한 힌트 단어 및 이미지 만들어 놓기
 def make_single_play_set():
@@ -30,9 +31,11 @@ def make_single_play_set():
 
     HINT_WORD_PROMPT = prompts["HINT_WORD_PROMPT"]
     HINT_WORD_TO_IMAGE_PROMPT = prompts["HINT_WORD_TO_IMAGE_PROMPT"]
-
+    
     # 타겟 단어 가져와서 순서대로
-    for i, _target in enumerate(target_words):
+    # for i, _target in enumerate(target_words, start=51):
+    for i in range(start_num, min(len(target_words), last_num+1), 1):
+        _target = target_words[i]
         if _target not in df["target"].unique():
             print(f"### target : {_target}")
             # 만들기
@@ -45,7 +48,7 @@ def make_single_play_set():
                                         user_prompt=hint_word_prompt,
                                         params={
                                             "temperature": 1.1,
-                                            "max_tokens": 34
+                                            "max_tokens": 64
                                             },
                                         response_format=None
                                         )
@@ -109,7 +112,7 @@ def make_single_play_set():
                                    })
             df = pd.concat([df, df_tmp], ignore_index=True)
 
-            if i > constraint_number:
+            if i > last_num:
                 break
         else:
             print(f"\ntarget: {_target}")
@@ -154,6 +157,14 @@ def make_single_play_set():
                         # hint_image_url = call_dalle_api(model="dall-e-3", prompt=hint_image_prompt)
                         # hint_img_urls.append(hint_image_url)
                         hint_b64_img = call_dalle_api(model="dall-e-3", prompt=hint_image_prompt, response_format="b64_json")
+                        
+                        if hint_b64_img is None:
+                            print("df 저장")
+                            df.to_csv("app/resources/single_mode_set.csv", index=False)
+
+                            break
+                            
+                        
                         resized_hint_b64_img = resize_base64_image(hint_b64_img, 300, 300)
                         
                         df.loc[idx, "hint_image_prompt"] = hint_image_prompt
@@ -162,10 +173,38 @@ def make_single_play_set():
 
             print("============")
 
-            if i > constraint_number:
+            if i > last_num:
                 break
 
     # df로 저장??
     print("df 저장")
     df.to_csv("app/resources/single_mode_set.csv", index=False)
     
+def make_the_hints(_target):
+    print(f"### target : {_target}")
+    # 만들기
+    HINT_WORD_PROMPT = prompts["HINT_WORD_PROMPT"]
+    hint_word_prompt = HINT_WORD_PROMPT[:]
+    hint_word_prompt = hint_word_prompt.replace("[input]", _target)
+    # print(f"- hint_word_prompt: {hint_word_prompt}")
+
+    # 힌트 단어 생성
+    gen_results = generate_text(model="gpt-4o",
+                                user_prompt=hint_word_prompt,
+                                params={
+                                    "temperature": 1.1,
+                                    "max_tokens": 64
+                                    },
+                                response_format=None
+                                )
+    if gen_results:
+        gen_results = gen_results.choices[0].message.content
+    else:
+        print("error")
+        return []
+    
+    hint_words = gen_results.split(",")
+    hint_words = [v.strip() for v in hint_words]
+
+    for hint in hint_words:
+        print(f"- hint: {hint}")
