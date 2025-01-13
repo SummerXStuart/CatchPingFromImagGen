@@ -80,7 +80,7 @@ async def single_mode(msg: Input):
             write_user_data(msg.uid, _data)
                     
             output = {
-                "hint_b64_imgs": [],
+                # "hint_b64_imgs": [],
                 "current_target_index": current_target_index,
                 "current_hint_img_index": _data["current_hint_img_index"],
                 "score": score,
@@ -95,7 +95,7 @@ async def single_mode(msg: Input):
             current_target_index += 1
             current_hint_img_index = 0
 
-            _b64_img = df[df["target"]==_status["targets"][current_target_index]].iloc[0, 3]
+            # _b64_img = df[df["target"]==_status["targets"][current_target_index]].iloc[0, 3]
             
             # reset trial
             trial = 0
@@ -113,7 +113,7 @@ async def single_mode(msg: Input):
             
             # output 정의해주기
             output = {
-                "hint_b64_imgs": [_b64_img],
+                # "hint_b64_imgs": [_b64_img],
                 "current_target_index": current_target_index,
                 "current_hint_img_index": current_hint_img_index,
                 "score": score,
@@ -139,13 +139,13 @@ async def single_mode(msg: Input):
             }
             write_user_data(msg.uid, _data)
 
-            b64_hint_imgs = []
-            for idx in range(0, current_hint_img_index+1):
-                tmp_img = df[df["target"]==_status["targets"][current_target_index]].iloc[idx, 3]
-                b64_hint_imgs.append(tmp_img)
+            # b64_hint_imgs = []
+            # for idx in range(0, current_hint_img_index+1):
+            #     tmp_img = df[df["target"]==_status["targets"][current_target_index]].iloc[idx, 3]
+            #     b64_hint_imgs.append(tmp_img)
 
             output = {
-                "hint_b64_imgs": b64_hint_imgs,
+                # "hint_b64_imgs": b64_hint_imgs,
                 "current_target_index": current_target_index,
                 "current_hint_img_index": current_hint_img_index,
                 "score": score,
@@ -181,13 +181,13 @@ async def single_mode(msg: Input):
                 }
                 write_user_data(msg.uid, _data)
 
-                b64_hint_imgs = []
-                for idx in range(0, current_hint_img_index+1):
-                    tmp_img = df[df["target"]==_status["targets"][current_target_index]].iloc[idx, 3]
-                    b64_hint_imgs.append(tmp_img)
+                # b64_hint_imgs = []
+                # for idx in range(0, current_hint_img_index+1):
+                #     tmp_img = df[df["target"]==_status["targets"][current_target_index]].iloc[idx, 3]
+                #     b64_hint_imgs.append(tmp_img)
 
                 output = {
-                    "hint_b64_imgs": b64_hint_imgs,
+                    # "hint_b64_imgs": b64_hint_imgs,
                     "current_target_index": current_target_index,
                     "current_hint_img_index": current_hint_img_index,
                     "score": score,
@@ -212,7 +212,7 @@ async def single_mode(msg: Input):
                     write_user_data(msg.uid, _data)
 
                     output = {
-                        "hint_b64_imgs": [],
+                        # "hint_b64_imgs": [],
                         "current_target_index": current_target_index,
                         "current_hint_img_index": current_hint_img_index,
                         "score": score,
@@ -239,10 +239,10 @@ async def single_mode(msg: Input):
                     }
                     write_user_data(msg.uid, _data)
 
-                    b64_img = df[df["target"]==_status["targets"][current_target_index]].iloc[0, 3]
+                    # b64_img = df[df["target"]==_status["targets"][current_target_index]].iloc[0, 3]
 
                     output = {
-                        "hint_b64_imgs": [b64_img],
+                        # "hint_b64_imgs": [b64_img],
                         "current_target_index": current_target_index,
                         "current_hint_img_index": current_hint_img_index,
                         "score": score,
@@ -283,18 +283,19 @@ async def single_mode_next_hint(msg: InitInfo):
     }
     write_user_data(msg.uid, _data)
 
-    b64_hint_imgs = []
-    for idx in range(0, current_hint_img_index+1):
-        tmp_img = df[df["target"]==target_word].iloc[idx, 3]
-        b64_hint_imgs.append(tmp_img)
+    # b64_hint_imgs = []
+    # for idx in range(0, current_hint_img_index+1):
+    #     tmp_img = df[df["target"]==target_word].iloc[idx, 3]
+    #     b64_hint_imgs.append(tmp_img)
 
     output = {
-        "hint_b64_imgs": b64_hint_imgs,
+        # "hint_b64_imgs": b64_hint_imgs,
         "current_target_index": current_target_index,
         "current_hint_img_index": current_hint_img_index,
         "score": score,
         "result": False, 
         "trial": trial, 
+        "target": None,
         "end": False
     }
 
@@ -331,10 +332,10 @@ async def giveup(msg: InitInfo):
         }
         write_user_data(msg.uid, _data)
         
-        b64_img = df[df["target"]==_status["targets"][current_target_index]].iloc[current_hint_img_index, 3]
+        # b64_img = df[df["target"]==_status["targets"][current_target_index]].iloc[current_hint_img_index, 3]
         
         output = {
-            "hint_b64_imgs": [b64_img],
+            # "hint_b64_imgs": [b64_img],
             "current_target_index": current_target_index,
             "current_hint_img_index": current_hint_img_index,
             "score": score,
@@ -348,7 +349,7 @@ async def giveup(msg: InitInfo):
         # 마지막 문제면 스코어 보여주고 마무리
         
         output = {
-            "hint_b64_imgs": [],
+            # "hint_b64_imgs": [],
             "current_target_index": current_target_index,
             "current_hint_img_index": _status["current_hint_img_index"],
             "score": score,
@@ -366,8 +367,15 @@ async def init_single_mode(msg: InitInfo):
     # 문제 뽑기
     _targets = random.choices(df["target"].unique(), k=3)
 
-    # 첫번째 문제의 b64 image
-    _b64_img = df[df["target"]==_targets[0]].iloc[0, 3]
+    # 모든 문제의 b64 image
+    _b64_imgs = []
+
+    for i in range(len(_targets)):
+        quiz_set = df[df["target"]==_targets[i]]
+        tmp = []
+        for j in range(len(quiz_set)):
+            tmp.append(quiz_set.iloc[j, 3])
+        _b64_imgs.append(tmp)
 
     _data = {
         "uid": msg.uid,
@@ -381,9 +389,9 @@ async def init_single_mode(msg: InitInfo):
     write_user_data(msg.uid, _data)
             
     output = {
-        "hint_b64_imgs": [_b64_img],
-        "current_target_index": _data["current_target_index"], # 첫번째 의미
-        "current_hint_img_index": _data["current_hint_img_index"], # 첫번째 의미
+        "hint_b64_imgs": _b64_imgs,
+        "current_target_index": _data["current_target_index"], # 타겟 단어 인덱스
+        "current_hint_img_index": _data["current_hint_img_index"], # 힌트 이미지 인덱스
         "score": _data["score"],
         # "result": False, # 문제를 맞혔는지
         # "trial": _data["trial"], 
