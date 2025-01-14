@@ -37,6 +37,9 @@ HINT_WORD_PROMPT2: |-
   target word: 짜장면
   hints: Asian people sitting around a round table eating noodles, A man riding a scooter wearing a helmet and holding a silver metal bag in one hand., Brown noodles
 
+  target word: 이순신
+  hints: Admiral of the Asian Navy during the Joseon Dynasty, warfare, It is a round, steel battleship resembling a turtle's shell and has a dragon's head at the stern
+
   target word: [input]
   hints: 
 

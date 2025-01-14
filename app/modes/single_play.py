@@ -39,6 +39,7 @@ def make_single_play_set(start_num, last_num, save_file=False):
         _target = target_words[i]
         if _target not in df["target"].unique():
             print(f"### target : {_target}")
+
             # 만들기
             hint_word_prompt = HINT_WORD_PROMPT[:]
             hint_word_prompt = hint_word_prompt.replace("[input]", _target)
@@ -128,18 +129,18 @@ def make_single_play_set(start_num, last_num, save_file=False):
             if i > last_num:
                 break
         else:
-            print(f"\ntarget: {_target}")
             # target 있는 행의 정보 알아내기
             df_cur_target = df[df["target"]==_target]
-            
             
             # target만 있을 때, 힌트 생성 -> 이미지 프롬프트 생성 -> 이미지 생성
             # print(f"hint 유무: {df_cur_target['hint'].isna().sum()}")
 
             # 힌트만 있을 때 -> 이미지 프롬프트 생성 -> 이미지 생성
-            print(f"hint_b64_img: {df_cur_target['hint_b64_img'].isna().sum()}")
-
+            
             if df_cur_target['hint_b64_img'].isna().sum() > 0:
+                print(f"\ntarget: {_target}")
+                print(f"hint_b64_img: {df_cur_target['hint_b64_img'].isna().sum()}")
+
                 for idx, img_absence in zip(df_cur_target['hint_b64_img'].isna().index, df_cur_target['hint_b64_img'].isna()):
                     if img_absence:
                         hint_word = df.iloc[idx, 1]
