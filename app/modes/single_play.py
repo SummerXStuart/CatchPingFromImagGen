@@ -10,6 +10,7 @@ from app.modules.utils.img_mgmt import (
 )
 import yaml
 import pandas as pd
+from make_img_file import save_base64_image
 
 with open("app/prompts/prompt.yaml") as _f:
     prompts = yaml.safe_load(_f)
@@ -21,16 +22,16 @@ def generate_hint_image(hint_word):
         hint_word (_type_): _description_
     """
 
-start_num = 0
-last_num = 60
 
 # 미리 싱글 플레이를 위한 힌트 단어 및 이미지 만들어 놓기
-def make_single_play_set():
+def make_single_play_set(start_num, last_num, save_file=False):
     target_words = get_full_target_words()
     df = get_single_play_set()
 
     HINT_WORD_PROMPT = prompts["HINT_WORD_PROMPT"]
     HINT_WORD_TO_IMAGE_PROMPT = prompts["HINT_WORD_TO_IMAGE_PROMPT"]
+    
+    normal = True
     
     # 타겟 단어 가져와서 순서대로
     # for i, _target in enumerate(target_words, start=51):
@@ -57,6 +58,7 @@ def make_single_play_set():
             else:
                 print("df 저장")
                 df.to_csv("app/resources/single_mode_set.csv", index=False)
+                normal = False
 
                 break
 
@@ -88,6 +90,7 @@ def make_single_play_set():
                 else:
                     print("df 저장")
                     df.to_csv("app/resources/single_mode_set.csv", index=False)
+                    normal = False
 
                     break
                 print(f"    - hint_image_prompt: {hint_image_prompt}")
@@ -99,18 +102,28 @@ def make_single_play_set():
                 if hint_b64_img is None:
                     print("df 저장")
                     df.to_csv("app/resources/single_mode_set.csv", index=False)
+                    normal = False
 
                     break
                     
                 resized_hint_b64_img = resize_base64_image(hint_b64_img, 300, 300)
                 hint_b64_imgs.append(resized_hint_b64_img)
                 
-            df_tmp = pd.DataFrame({"target": [_target]*len(hint_b64_imgs),
-                                   "hint": hint_words,
-                                   "hint_image_prompt": hint_img_prompts,
-                                   "hint_b64_img": hint_b64_imgs
-                                   })
-            df = pd.concat([df, df_tmp], ignore_index=True)
+                if save_file:
+                    if len(hint_word) > 40:
+                        _path = f"app/resources/ex/{_target}_{hint_word[:30]}.png"
+                    else:
+                        _path = f"app/resources/ex/{_target}_{hint_word}.png"
+                    save_base64_image(resized_hint_b64_img, _path)
+                
+            
+            if normal:
+                df_tmp = pd.DataFrame({"target": [_target]*len(hint_b64_imgs),
+                                    "hint": hint_words,
+                                    "hint_image_prompt": hint_img_prompts,
+                                    "hint_b64_img": hint_b64_imgs
+                                    })
+                df = pd.concat([df, df_tmp], ignore_index=True)
 
             if i > last_num:
                 break
@@ -149,6 +162,7 @@ def make_single_play_set():
                             
                             print("df 저장")
                             df.to_csv("app/resources/single_mode_set.csv", index=False)
+                            normal = False
 
                             break
                         print(f"    - hint_image_prompt: {hint_image_prompt}")
@@ -161,6 +175,7 @@ def make_single_play_set():
                         if hint_b64_img is None:
                             print("df 저장")
                             df.to_csv("app/resources/single_mode_set.csv", index=False)
+                            normal = False
 
                             break
                             
@@ -169,6 +184,13 @@ def make_single_play_set():
                         
                         df.loc[idx, "hint_image_prompt"] = hint_image_prompt
                         df.loc[idx, "hint_b64_img"] = resized_hint_b64_img
+                        
+                        if save_file:
+                            if len(hint_word) > 40:
+                                _path = f"app/resources/ex/{_target}_{hint_word[:30]}.png"
+                            else:
+                                _path = f"app/resources/ex/{_target}_{hint_word}.png"
+                            save_base64_image(resized_hint_b64_img, _path)
 
 
             print("============")
