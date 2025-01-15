@@ -58,5 +58,17 @@
         "current_hint_img_index": 2,
         "trial": 1,
         "score": 5
+    },
+    "stuart01151712": {
+        "uid": "stuart01151712",
+        "targets": [
+            "아디다스",
+            "농구",
+            "변호사"
+        ],
+        "current_target_index": 2,
+        "current_hint_img_index": 1,
+        "trial": 1,
+        "score": 8
     }
 }

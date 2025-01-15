@@ -37,12 +37,10 @@ def get_hint_images_for_single_mode(word):
 if __name__=="__main__":
     from app.modes.single_play import make_single_play_set, make_the_hints
 
-    make_single_play_set(0, 80, True)
+    make_single_play_set(0, 111, True)
     # make_the_hints("도서관")
     """
     - hint: Rows of tall shelves filled with colorful spines
     - hint: a quiet place where a student immerses in a book
     - hint: a librarian organizing stacks of dusty tomes.
     """
-
-    # make_the_hints("나시고랭")
