@@ -30,7 +30,8 @@ class Input(BaseModel):
     uid: str
     estimation: str
 
-df = pd.read_csv("app/resources/single_mode_dummy_set.csv", encoding="utf-8")
+# df = pd.read_csv("app/resources/single_mode_dummy_set.csv", encoding="utf-8")
+df = pd.read_csv("app/resources/single_mode_set.csv", encoding="utf-8")
 
 @app.post("/catchping_backend/single_mode_quiz")
 async def single_mode(msg: Input):
@@ -60,7 +61,7 @@ async def single_mode(msg: Input):
     
     score = _status["score"]
     
-    #TODO 정답일 때와 end=True일 때, 한 문제에 대해 모든 힌트와 기회를 소진했을 때는 target을 알려주기 
+    # 정답일 때와 end=True일 때, 한 문제에 대해 모든 힌트와 기회를 소진했을 때는 target을 알려주기 
     if result:
         # 맞으면 trial 에 따른 score 추가
         score += score_criteria[trial]
