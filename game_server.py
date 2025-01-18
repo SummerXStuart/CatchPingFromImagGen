@@ -2,7 +2,7 @@ from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 import pandas as pd
 import uvicorn
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 import random
 from app.database.crud import (
     read_user_data,
@@ -24,18 +24,35 @@ app.add_middleware(
 )
 
 class InitInfo(BaseModel):
-    uid: str
+    uid: str = Field(description="user ID")
 
 class Input(BaseModel):
-    uid: str
-    estimation: str
+    uid: str = Field(description="user ID")
+    estimation: str = Field(description="퀴즈 응시자가 제출한 예측한 답")
 
+class InitialSettings(BaseModel):
+    hint_b64_imgs: list[list[str]] = Field(description="3개 문제에 대한 3개 힌트 이미지를 base64 포맷으로 이중 리스트에 담아 전달. 한 리스트에 3개 힌트 이미지 담김.")
+    current_target_index: int = Field(description="현재 타겟 문제 인덱스 번호")
+    current_hint_img_index: int = Field(description="현재 타겟 문제의 힌트 이미지 인덱스 번호")
+    score: int = Field(description="현재 점수, 초기는 0점")
+
+class QuizProcessResult(BaseModel):
+    current_target_index: int = Field(description="현재 타겟 문제 인덱스 번호")
+    current_hint_img_index: int = Field(description="현재 타겟 문제의 힌트 이미지 인덱스 번호")
+    score: int = Field(description="현재 점수, 초기는 0점")
+    result: bool = Field(description="퀴즈 응시자가 낸 답이 정답인지 아닌지 여부")
+    trial: int = Field(description="현재 힌트에서 몇 번 시도했는지 -> 시도 횟수")
+    target: str = Field(description="정답, (단, 해당 문제가 끝났거나 포기했을 때 보내준다.)")
+    end: bool = Field(description="모든 문제가 끝났으면 True, 아니면 False") 
+
+    
 # df = pd.read_csv("app/resources/single_mode_dummy_set.csv", encoding="utf-8")
 df = pd.read_csv("app/resources/single_mode_set.csv", encoding="utf-8")
 
 @app.post("/catchping_backend/single_mode_quiz")
-async def single_mode(msg: Input):
-
+async def single_mode(msg: Input) -> QuizProcessResult:
+    """응시자가 문제를 푸는 것을 확인하는 API
+    """
     # uid 기준 status 가져오기
     _status = read_user_data(msg.uid)
     
@@ -257,7 +274,8 @@ async def single_mode(msg: Input):
     return output
 
 @app.post("/catchping_backend/next_hint")
-async def single_mode_next_hint(msg: InitInfo):
+async def single_mode_next_hint(msg: InitInfo) -> QuizProcessResult:
+    """퀴즈 응시자가 다음 힌트 이미지를 보고 싶다고 요청한 경우에 다음 힌트 이미지 인덱스 반환"""
     # uid 기준 status 가져오기
     _status = read_user_data(msg.uid)
     
@@ -304,7 +322,8 @@ async def single_mode_next_hint(msg: InitInfo):
 
 
 @app.post("/catchping_backend/giveup")
-async def giveup(msg: InitInfo):
+async def giveup(msg: InitInfo)->QuizProcessResult:
+    """퀴즈 응시자가 현재 문제에 대해 포기한 것이므로 정답을 알려주고 문제가 남았다면 다음 문제의 인덱스를 반환한다."""
     # uid 기준 status 가져오기
     _status = read_user_data(msg.uid)
     
@@ -363,8 +382,8 @@ async def giveup(msg: InitInfo):
     return output
 
 @app.post("/catchping_backend/init_single_mode")
-async def init_single_mode(msg: InitInfo):
-    """처음 요청"""
+async def init_single_mode(msg: InitInfo) -> InitialSettings:
+    """싱글 모드 처음 진입할 때 요청하는 API로, 해당 아이디에 대한 문제를 생성하고 초기 이미지를 전달함."""
     # 문제 뽑기
     _targets = random.choices(df["target"].unique(), k=3)
 
