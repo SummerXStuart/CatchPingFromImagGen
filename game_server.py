@@ -42,7 +42,7 @@ class QuizProcessResult(BaseModel):
     score: int = Field(description="현재 점수, 초기는 0점")
     result: bool = Field(description="퀴즈 응시자가 낸 답이 정답인지 아닌지 여부")
     trial: int = Field(description="현재 힌트에서 몇 번 시도했는지 -> 시도 횟수")
-    target: str = Field(description="정답, (단, 해당 문제가 끝났거나 포기했을 때 보내준다.)")
+    target: Optional[str] = Field(None, description="정답, (단, 해당 문제가 끝났거나 포기했을 때 보내준다.)")
     end: bool = Field(description="모든 문제가 끝났으면 True, 아니면 False") 
 
     
