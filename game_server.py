@@ -187,7 +187,7 @@ async def single_mode(msg: Input) -> QuizProcessResult:
         elif trial == 3:
             if current_hint_img_index < 2:
                 current_hint_img_index = _status["current_hint_img_index"] + 1
-                trial = 0
+                # trial = 0
 
                 _data = {
                     "uid": msg.uid,
