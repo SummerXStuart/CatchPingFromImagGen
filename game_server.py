@@ -281,14 +281,17 @@ async def single_mode_next_hint(msg: InitInfo) -> QuizProcessResult:
     
     # 현재 문제가 뭔지 확인
     current_target_index = _status["current_target_index"]
-    target_word = _status["targets"][current_target_index]
+    # target_word = _status["targets"][current_target_index]
     score = _status["score"]
 
     # validation 필요
+    # TODO: 문제가 끝난 사람인지 확인
+    
     # 3번째 힌트면 못 줌.
     if _status["current_hint_img_index"] == (len(_status["targets"]) - 1):
         raise HTTPException(400, detail="You have already received all hints.")
     
+
     current_hint_img_index = _status["current_hint_img_index"] + 1
     trial = 0
 
@@ -374,7 +377,7 @@ async def giveup(msg: InitInfo)->QuizProcessResult:
             "current_hint_img_index": _status["current_hint_img_index"],
             "score": score,
             "result": False, 
-            "trial": trial, 
+            "trial": _status["trial"], 
             "target": target_word,
             "end": True
         }
