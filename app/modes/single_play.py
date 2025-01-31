@@ -10,7 +10,8 @@ from app.modules.utils.img_mgmt import (
 )
 import yaml
 import pandas as pd
-from make_img_file import save_base64_image
+# from make_img_file import save_base64_image
+from app.modules.utils.img_mgmt import save_base64_image
 
 with open("app/prompts/prompt.yaml") as _f:
     prompts = yaml.safe_load(_f)
