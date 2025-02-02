@@ -49,7 +49,7 @@ class QuizProcessResult(BaseModel):
 # df = pd.read_csv("app/resources/single_mode_dummy_set.csv", encoding="utf-8")
 df = pd.read_csv("app/resources/single_mode_set.csv", encoding="utf-8")
 
-@app.post("/catchping_backend/single_mode_quiz")
+@app.post("/api/catchping_backend/single_mode_quiz")
 async def single_mode(msg: Input) -> QuizProcessResult:
     """응시자가 문제를 푸는 것을 확인하는 API
     """
@@ -273,7 +273,7 @@ async def single_mode(msg: Input) -> QuizProcessResult:
     
     return output
 
-@app.post("/catchping_backend/next_hint")
+@app.post("/api/catchping_backend/next_hint")
 async def single_mode_next_hint(msg: InitInfo) -> QuizProcessResult:
     """퀴즈 응시자가 다음 힌트 이미지를 보고 싶다고 요청한 경우에 다음 힌트 이미지 인덱스 반환"""
     # uid 기준 status 가져오기
@@ -324,7 +324,7 @@ async def single_mode_next_hint(msg: InitInfo) -> QuizProcessResult:
     return output
 
 
-@app.post("/catchping_backend/giveup")
+@app.post("/api/catchping_backend/giveup")
 async def giveup(msg: InitInfo)->QuizProcessResult:
     """퀴즈 응시자가 현재 문제에 대해 포기한 것이므로 정답을 알려주고 문제가 남았다면 다음 문제의 인덱스를 반환한다."""
     # uid 기준 status 가져오기
@@ -384,7 +384,7 @@ async def giveup(msg: InitInfo)->QuizProcessResult:
 
     return output
 
-@app.post("/catchping_backend/init_single_mode")
+@app.post("/api/catchping_backend/init_single_mode")
 async def init_single_mode(msg: InitInfo) -> InitialSettings:
     """싱글 모드 처음 진입할 때 요청하는 API로, 해당 아이디에 대한 문제를 생성하고 초기 이미지를 전달함."""
     # 문제 뽑기
