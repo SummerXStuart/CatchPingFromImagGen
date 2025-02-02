@@ -56,12 +56,6 @@ async def single_mode(msg: Input) -> QuizProcessResult:
     # uid 기준 status 가져오기
     _status = read_user_data(msg.uid)
     
-    score_criteria = {
-        1: 3,
-        2: 2,
-        3: 1
-    }
-
     # 현재 문제가 뭔지 확인
     current_target_index = _status["current_target_index"]
     target_word = _status["targets"][current_target_index]
@@ -81,7 +75,8 @@ async def single_mode(msg: Input) -> QuizProcessResult:
     # 정답일 때와 end=True일 때, 한 문제에 대해 모든 힌트와 기회를 소진했을 때는 target을 알려주기 
     if result:
         # 맞으면 trial 에 따른 score 추가
-        score += score_criteria[trial]
+        # score += score_criteria[trial]
+        score += (4 - trial) * (3 - _status["current_hint_img_index"])
         
         # 마지막 문제일 경우
         # end=True, score 출력
